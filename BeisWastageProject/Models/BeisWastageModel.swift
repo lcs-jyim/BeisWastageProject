@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - Ingredient
-struct Ingredient: Identifiable, Codable {
+struct Ingredient: Identifiable, Codable,Hashable {
     var id: Int
     var name: String
     var unit: String
