@@ -12,14 +12,14 @@ struct ContentView: View {
         NavigationStack {
             VStack(spacing: 32) {
                 
-                Text("Who Are You?")
+                Text("我要进行...操作")
                     .font(.largeTitle)
                     .fontWeight(.semibold)
                     .padding(.bottom, 16)
 
                 // 📦 Inventory Manager
                 NavigationLink(destination: InventoryDashboardView()) {
-                    Label("Inventory Manager", systemImage: "shippingbox")
+                    Label("库存管理", systemImage: "shippingbox")
                         .font(.title3)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -30,7 +30,7 @@ struct ContentView: View {
 
                 // 💸 Sales Manager
                 NavigationLink(destination: SalesDashboardView()) {
-                    Label("Sales Manager", systemImage: "dollarsign.circle")
+                    Label("销售管理", systemImage: "dollarsign.circle")
                         .font(.title3)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -41,7 +41,7 @@ struct ContentView: View {
 
                 // 🧮 Wastage Viewer
                 NavigationLink(destination: WastageReportView()) {
-                    Label("Wastage Viewer", systemImage: "chart.bar.doc.horizontal")
+                    Label("损耗管理及查看库存", systemImage: "chart.bar.doc.horizontal")
                         .font(.title3)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -51,7 +51,7 @@ struct ContentView: View {
                 }
             }
             .padding()
-            .navigationTitle("Beis Wastage System")
+            .navigationTitle("贝家损耗管理系统")
         }
     }
 }
