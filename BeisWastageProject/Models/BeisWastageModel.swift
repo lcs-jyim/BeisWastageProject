@@ -21,16 +21,9 @@ struct RecipeItem: Identifiable, Codable {
     var quantityPerUnit: Double
 }
 
-// MARK: - SaleEntry
-struct SaleEntry: Identifiable, Codable {
-    var id: Int
-    var productId: Int
-    var quantitySold: Int
-    var date: Date
-}
 
 // MARK: - PurchaseEntry
-struct PurchaseEntry: Identifiable, Codable {
+struct IVPurchase: Identifiable, Codable {
     var id: Int
     var ingredientId: Int
     var quantity: Double
@@ -58,10 +51,10 @@ struct ScrapProductEntry: Identifiable, Codable {
     var date: Date
 }
 
-struct TempSalesEntry: Identifiable {
+struct SalesEntry: Identifiable {
     let id = UUID()
-    var product: Product
-    var quantity: String
+    var product: Int
+    var quantity: Int
     var date: Date
     var channel: SalesChannel
 }

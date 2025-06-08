@@ -13,7 +13,7 @@ struct SalesDataDashboardView: View {
     @State private var selectedProduct: Product?
     @State private var quantitySold = ""
     @State private var saleDate = Date()
-    @State private var salesList: [TempSalesEntry] = []
+    @State private var salesList: [SalesEntry] = []
     
     @State private var showAlert = false
     @State private var alertMessage = ""
