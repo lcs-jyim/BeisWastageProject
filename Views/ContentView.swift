@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
+    let db = DatabaseConnection()
+        @State private var inventoryVM: InventoryViewModel
+
+        init() {
+            inventoryVM = InventoryViewModel(using: db)
+        }
     var body: some View {
         NavigationStack {
             VStack(spacing: 32) {

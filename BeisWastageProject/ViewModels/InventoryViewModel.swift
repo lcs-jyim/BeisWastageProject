@@ -8,17 +8,21 @@
 import Foundation
 import OSLog
 import Supabase
-
+import Network
 
 @Observable
 class InventoryViewModel {
     var allIngredient:[Ingredient] = []
     var purchases: [IVPurchase] = []
+    
+    
+    
+    
     private let db: DatabaseConnection
     
     init(using db: DatabaseConnection) {
         self.db = db
-        Logger.database.info("Initializing LandingViewModel.")
+        Logger.database.info("Initializing IventoryViewModel.")
         
         Task {
             await self.getAllInventory()
@@ -38,6 +42,7 @@ class InventoryViewModel {
             Logger.database.info("Inventories successfully fetched and updated.")
         } catch {
             Logger.database.error("Failed to fetch Inventories: \(error.localizedDescription)")
+            
         }
     }
     
@@ -56,9 +61,9 @@ class InventoryViewModel {
             Logger.database.error("Failed to fetch Purchases: \(error.localizedDescription)")
         }
     }
-    func submitPurchase(ingredientId: Int, quantity: Double, date: Date) async {
+    func submitPurchase(ingredientId: Int, quantityPurchased: Double, date: Date, quantityInStock: Double) async {
         do {
-            let newEntry = IVPurchase(id: 0, ingredientId: ingredientId, quantity: quantity, date: date)
+            let newEntry = IVPurchase(ingredientId: ingredientId, quantityInStock:quantityInStock, quantityPurchased: quantityPurchased, date: date)
 
             try await db.supabase
                 .from("purchases")
@@ -75,3 +80,4 @@ class InventoryViewModel {
 
 
 }
+

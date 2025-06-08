@@ -9,9 +9,16 @@ import SwiftUI
 
 @main
 struct BeisWastageProjectApp: App {
+    let db = DatabaseConnection()
+    @State private var inventoryVM = InventoryViewModel(using: DatabaseConnection())
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack {
+                ContentView()
+            }
+            .environment(inventoryVM)  // ✅ Inject here once for the whole app
         }
     }
 }
+
