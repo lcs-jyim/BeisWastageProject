@@ -24,8 +24,8 @@ struct SalesDashboardView: View {
                 .cornerRadius(12)
         }
 
-        NavigationLink(destination:ScrapDashboardView()){
-//        NavigationLink(destination: SalesDataDashboardView()) {
+        
+        NavigationLink(destination: SalesDataDashboardView()) {
             Label("销售数量", systemImage: "dollarsign.circle")
                 .font(.title3)
                 .foregroundColor(.white)

@@ -8,34 +8,31 @@
 import SwiftUI
 
 struct ScrapDashboardView: View {
+    @Environment(SalesViewModel.self) private var viewModel
+    
     @State private var searchText = ""
     @State private var selectedProduct: Product?
     @State private var scrapQuantity = ""
     @State private var scrapDate: Date = .now
-    @State private var scrapItems: [ScrapProductEntry] = []
-
+    @State private var scrapItems: [previewListType] = []
+    
     @State private var showAlert = false
     @State private var alertMessage = ""
-
-    // Replace with actual fetch from DB later
-    let products: [Product] = [
-        Product(id: 1, name: "Tiramisu Cake"),
-        Product(id: 2, name: "Mango Roll"),
-        Product(id: 3, name: "Chocolate Croissant")
-    ]
-
+    @State private var showSuccessAlert = false
+    @State private var successMessage = ""
+    
     var filteredProducts: [Product] {
         searchText.isEmpty
         ? []
-        : products.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        : viewModel.allProducts.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
     }
-
+    
     var body: some View {
         Form {
             // 🔍 Search
             Section(header: Text("🔍 选择要报损的产品")) {
                 TextField("搜索产品名称", text: $searchText)
-
+                
                 ForEach(filteredProducts) { product in
                     Button {
                         selectedProduct = product
@@ -44,29 +41,28 @@ struct ScrapDashboardView: View {
                         Text(product.name)
                     }
                 }
-
+                
                 if let selected = selectedProduct {
-                    Text("选中产品: \(selected.name)")
-                        .foregroundColor(.gray)
+                    Text("选中产品: \(selected.name)").foregroundColor(.gray)
                 }
-
+                
                 TextField("报损数量", text: $scrapQuantity)
                     .keyboardType(.decimalPad)
-
+                
                 DatePicker("报损日期", selection: $scrapDate, displayedComponents: .date)
-
+                
                 Button("➕ 添加记录") {
                     guard let product = selectedProduct,
-                          let _ = Double(scrapQuantity),
                           !scrapQuantity.isEmpty else {
                         alertMessage = "请选中一个产品并输入有效的数量"
                         showAlert = true
                         return
                     }
-
-                    let newScrap = ScrapProductEntry(product: product, quantity: scrapQuantity, date: scrapDate)
-                    scrapItems.append(newScrap)
-
+                    
+                    scrapItems.append(
+                        previewListType(product: product, quantity: scrapQuantity, date: scrapDate)
+                    )
+                    
                     // Reset
                     searchText = ""
                     selectedProduct = nil
@@ -74,24 +70,24 @@ struct ScrapDashboardView: View {
                     scrapDate = .now
                 }
             }
-
-            // 📝 Review
+            
+            // 📋 Review
             Section(header: Text("📋 报损列表")) {
                 if scrapItems.isEmpty {
-                    Text("当前无报损记录")
-                        .foregroundColor(.secondary)
+                    Text("当前无报损记录").foregroundColor(.secondary)
                 } else {
-                    ForEach($scrapItems) { $item in
+                    ForEach(scrapItems) { xitem in
                         VStack(alignment: .leading) {
-                            Text(item.product.name)
+                            Text(xitem.product.name)
                                 .fontWeight(.semibold)
                             HStack {
                                 Text("数量:")
-                                TextField("数量", text: $item.quantity)
-                                    .keyboardType(.decimalPad)
-                                    .frame(width: 80)
+                                Text(xitem.quantity)
                             }
-                            Text("日期: \(item.date.formatted(date: .abbreviated, time: .omitted))")
+                                
+                            
+                            
+                            Text("日期: \(xitem.date.formatted(date: .abbreviated, time: .omitted))")
                                 .font(.footnote)
                                 .foregroundColor(.secondary)
                         }
@@ -99,13 +95,13 @@ struct ScrapDashboardView: View {
                     .onDelete { scrapItems.remove(atOffsets: $0) }
                 }
             }
-
+            
             // ✅ Submit
             if !scrapItems.isEmpty {
                 Button("📤 提交报损记录") {
-                    print("Submitting: \(scrapItems)")
-                    // TODO: Submit to Supabase
-                    scrapItems.removeAll()
+                    Task {
+                        await handleSubmit()
+                    }
                 }
             }
         }
@@ -115,10 +111,30 @@ struct ScrapDashboardView: View {
         } message: {
             Text(alertMessage)
         }
+        .alert("成功!", isPresented:$showSuccessAlert){
+            Button("好",role:.cancel){}
+        } message:{
+            Text(successMessage)
+        }
     }
+    
+    private func handleSubmit() async {
+        for item in scrapItems {
+            if let quantity = Int(item.quantity) {
+                await viewModel.submitScrapData(
+                    productId: item.product.id,
+                    quantity: quantity,
+                    date: item.date
+                )
+                
+                successMessage = "所有报损记录已成功提交。"
+                showSuccessAlert = true
+                scrapItems.removeAll()
+            }
+        }
+    }
+    
 }
-
-
 #Preview {
     ScrapDashboardView()
 }

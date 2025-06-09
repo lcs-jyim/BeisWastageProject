@@ -8,15 +8,11 @@
 import Foundation
 import OSLog
 import Supabase
-import Network
 
 @Observable
 class InventoryViewModel {
     var allIngredient:[Ingredient] = []
     var purchases: [IVPurchase] = []
-    
-    
-    
     
     private let db: DatabaseConnection
     

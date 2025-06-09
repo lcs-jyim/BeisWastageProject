@@ -57,19 +57,35 @@ struct WastageEntry: Identifiable, Codable {
 }
 //MARK: - ScrapProductEntry
 struct ScrapProductEntry: Identifiable, Codable {
-    let id = UUID()
-    var product: Product
-    var quantity: String  // store as string for editing
+    var id: Int?
+    var product: Int
+    var quantity: Int  // store as string for editing
     var date: Date
+    
+    enum CodingKeys:String, CodingKey {
+        case id
+        case product = "product_id"
+        case quantity
+        case date
+    }
 }
 
-struct SalesEntry: Identifiable {
-    let id = UUID()
+struct SalesEntry: Identifiable, Codable {
+    var id: Int?
     var product: Int
     var quantity: Int
     var date: Date
     var channel: SalesChannel
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case product = "product_id"
+        case quantity = "quantity_sold"
+        case date
+        case channel  // this will encode/decode as the string rawValue like "美团"
+    }
 }
+
 
 enum SalesChannel: String, CaseIterable, Identifiable, Codable {
     case 美团, 饿了么, 有赞, 店内
@@ -77,5 +93,9 @@ enum SalesChannel: String, CaseIterable, Identifiable, Codable {
     var id: String { self.rawValue }
 }
 
-
-
+struct previewListType: Identifiable, Codable {
+    var id = UUID()
+    var product:Product
+    var quantity: String
+    var date: Date
+}
